@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Sonal_DropDown.Models.Cascading>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col-6 offset-3 ">
+        <div>
+            <div class="form-group">
+                <label>Select Country</label>
+                <select class="form-control" id="ddlcountry">
+                    <option>Select</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Select State</label>
+                <select class="form-control" id="ddlstate">
+                    <option>Select</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Select City</label>
+                <select class="form-control" id="ddlcity">
+                    <option>Select</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        loadcountry()
+
+        $("#ddlcountry").change(function () {
+            loadstate();
+        })
+
+        $("#ddlstate").change(function () {
+            loadcity();
+        })
+
+
+    })
+
+    function loadcountry() {
+
+        $.get('@Url.Action("GetCountry", "Cascade")', function (response) {
+
+            $.each(response, function(i,e) {
+                $("#ddlcountry").append("<option value="+e.Id+">"+e.Name+"</option>")
+            })
+        })
+    }
+
+    function loadstate() {
+
+        var cid = $("#ddlcountry").val()
+        $.get('@Url.Action("GetState", "Cascade")', { id: cid }, function (response) {
+
+            $("#ddlstate").empty()
+            $("#ddlstate").append("<option>Select</option>")
+
+            $.each(response, function(i,e) {
+                $("#ddlstate").append("<option value="+e.Id+">"+e.Name+"</option>")
+            })
+        })
+    }
+
+    function loadcity() {
+
+        var sid = $("#ddlstate").val()
+
+        $.get('@Url.Action("GetCity", "Cascade")', { id: sid }, function (response) {
+
+            $("#ddlcity").empty()
+            $("#ddlcity").append("<option>Select</option>")
+
+            $.each(response, function(i,e) {
+                $("#ddlcity").append("<option value="+e.Id+">"+e.Name+"</option>")
+            })
+        })
+    }
+</script>
+
+
